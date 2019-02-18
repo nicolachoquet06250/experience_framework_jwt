@@ -18,6 +18,12 @@ class Subdomains {
 	}
 
 	public function set_domain($domain) {
+		$domain = explode('.', $domain);
+		if(count($domain) >= 3) {
+			array_shift($domain);
+		}
+		$domain = implode('.', $domain);
+		$domain = explode(':', $domain)[0];
 		$this->domain = $domain;
 		$this->sub_domains[$domain] = [];
 	}
