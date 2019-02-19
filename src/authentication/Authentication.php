@@ -14,13 +14,20 @@ use MiladRahimi\Jwt\JwtGenerator;
 use MiladRahimi\Jwt\JwtParser;
 
 class Authentication {
-	protected $private_key_path = __DIR__.'/../../../jwt/keys/private.pem';
-	protected $public_key_path = __DIR__.'/../../../jwt/keys/public.pem';
+	protected $private_key_path = __DIR__.'/../../keys/private.pem';
+	protected $public_key_path = __DIR__.'/../../keys/public.pem';
 	protected $sub_domains;
 	protected static $user;
+	protected $claims;
 
 	public function __construct() {
 		$this->sub_domains = Subdomains::create();
+		$this->claims = JWTClaims::create();
+	}
+
+	public function set_keys_path($private, $public) {
+		$this->private_key_path = $private;
+		$this->public_key_path = $public;
 	}
 
 	/**
@@ -112,7 +119,7 @@ class Authentication {
 	 * @throws \Exception
 	 */
 	public function addClaim($claim, $value) {
-		JWTClaims::create()->addClaim($claim)->setClaimValue($claim, $value);
+		$this->claims->add($claim)->set($claim, $value);
 		return $this;
 	}
 
@@ -120,6 +127,6 @@ class Authentication {
 	 * @return array
 	 */
 	public function getClaims() {
-		return JWTClaims::create()->get();
+		return $this->claims->get();
 	}
 }

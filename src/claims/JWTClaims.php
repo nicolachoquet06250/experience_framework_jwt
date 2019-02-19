@@ -20,7 +20,7 @@ class JWTClaims {
 	 * @param string $claim
 	 * @return $this
 	 */
-	public function addClaim(string $claim) {
+	public function add(string $claim) {
 		$this->claims[$claim] = true;
 		return $this;
 	}
@@ -31,7 +31,7 @@ class JWTClaims {
 	 * @return JWTClaims
 	 * @throws Exception
 	 */
-	public function setClaimValue(string $claim, $value) {
+	public function set(string $claim, $value) {
 		if(!isset($this->claims[$claim]))
 			throw new Exception('Claim `'.$claim.'` not found');
 		$this->claims[$claim] = $value;
