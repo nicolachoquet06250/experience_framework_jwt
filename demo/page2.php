@@ -1,21 +1,10 @@
 <?php
 
-require_once __DIR__.'/../autoload.php';
-
 use MiladRahimi\Jwt\Authentication\Authentication;
 use MiladRahimi\Jwt\Authentication\Subdomains;
 
 try {
-	$auth        = new Authentication();
-	$sub_domains = Subdomains::create();
-	$domain      = explode('.', $_SERVER['HTTP_HOST']);
-	if (count($domain) >= 3) {
-		array_shift($domain);
-	}
-	$domain = implode('.', $domain);
-	$domain = explode(':', $domain)[0];
-
-	$sub_domains->set_domain($domain);
+	require_once __DIR__.'/setup.php';
 
 	if (isset($_GET['disconnect'])) {
 		$auth->disconnect();
@@ -23,8 +12,7 @@ try {
 	}
 
 	if (!$auth->authenticated()) header('Location: /');
-	else
-		echo '
+	echo '
 <head>
 	<script src="https://code.jquery.com/jquery-3.3.1.js"
 			integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
@@ -54,6 +42,7 @@ try {
 <input type="button" value="suis-je authentifié ?" id="action_bearer" />
 <input type="button" onclick="window.location.href=\'?disconnect=1\'" value="déconnection"><br>
 <span id="auth_status"></span>';
+	return;
 }
 catch (Exception $e) {
 	echo '<div style="text-align: center;"><b style="color: red;">'.$e->getMessage().'</b></div>';

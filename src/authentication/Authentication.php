@@ -25,9 +25,15 @@ class Authentication {
 		$this->claims = JWTClaims::create();
 	}
 
-	public function set_keys_path($private, $public) {
+	/**
+	 * @param string $private
+	 * @param string $public
+	 * @return $this
+	 */
+	public function set_keys_path(string $private, string $public) {
 		$this->private_key_path = $private;
 		$this->public_key_path = $public;
+		return $this;
 	}
 
 	/**
@@ -42,13 +48,13 @@ class Authentication {
 		if(!$claims->isEmpty()) {
 			try {
 				$privateKey = new PrivateKey($this->private_key_path);
+				$signer = new RS256Signer($privateKey);
+				$generator = new JwtGenerator($signer);
+				return $generator->generate($claims->get());
 			}
 			catch (InvalidKeyException $e) {
-				throw new Exception('Private key not valide');
+				throw new Exception('Private key not valid');
 			}
-			$signer = new RS256Signer($privateKey);
-			$generator = new JwtGenerator($signer);
-			return $generator->generate($claims->get());
 		}
 		return '';
 	}
@@ -58,6 +64,9 @@ class Authentication {
 	 * @throws Exception
 	 */
 	public function get_refresh_token() {
+		if($this->refresh_token_exists()) {
+			return $_COOKIE['refresh_access_token'];
+		}
 		return $this->get_token();
 	}
 
@@ -82,10 +91,10 @@ class Authentication {
 	}
 
 	/**
-	 * @param $user
+	 * @param array $user
 	 * @throws Exception
 	 */
-	public function set_user($user) {
+	public function set_user(array $user) {
 		self::$user = $user;
 		$this->addClaim(PublicClaimNames::ID, $user['id']);
 	}
@@ -100,6 +109,9 @@ class Authentication {
 		return $this->authenticated();
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function disconnect() {
 		setcookie('access_token', '', 1, '/', '.'.$this->sub_domains->get_main_domain());
 		return !$this->authenticated();
@@ -113,12 +125,39 @@ class Authentication {
 	}
 
 	/**
-	 * @param $claim
-	 * @param $value
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function set_refresh_token() {
+		$refresh_token = $this->get_refresh_token();
+		setcookie('refresh_access_token', $refresh_token, time() + 2592000, '/', '.'.$this->sub_domains->get_main_domain());
+		$_COOKIE['refresh_access_token'] = $refresh_token;
+		return $this->refresh_token_exists();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function delete_refresh_token() {
+		unset($_COOKIE['refresh_access_token']);
+		setcookie('refresh_access_token', '', 1, '/', '.'.$this->sub_domains->get_main_domain());
+		return !$this->refresh_token_exists();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function refresh_token_exists() {
+		return isset($_COOKIE['refresh_access_token']);
+	}
+
+	/**
+	 * @param string $claim
+	 * @param mixed $value
 	 * @return Authentication
 	 * @throws \Exception
 	 */
-	public function addClaim($claim, $value) {
+	public function addClaim(string $claim, $value) {
 		$this->claims->add($claim)->set($claim, $value);
 		return $this;
 	}

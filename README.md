@@ -200,3 +200,20 @@ Any contribution will be appreciated :D
 ## License
 PHP-JWT is initially created by [Milad Rahimi](http://miladrahimi.com)
 and released under the [MIT License](http://opensource.org/licenses/mit-license.php).
+
+
+ --------------------------------------------------------------------------------------
+|                       CLIENT                      |            SERVEUR               |
+----------------------------------------------------------------------------------------
+|  Demande d'auth                                   |  Mise en Cookie du token         |
+----------------------------------------------------------------------------------------
+|  Action et envoi du token                         |  Verification du token           |
+----------------------------------------------------------------------------------------
+|  si token non valide, Demande d'un refresh-token  |  Envoie du refresh-token         |
+----------------------------------------------------------------------------------------
+|  Demande d'un nouveau token avec ce refresh-token |  Mise en Cookie du nouveau token |
+----------------------------------------------------------------------------------------
+|  Action et envoi du token                         |  Verification du token           |
+----------------------------------------------------------------------------------------
+|  Demande de déconnexion                           |  Suppression du Cookie de token  |
+ --------------------------------------------------------------------------------------
