@@ -21,6 +21,7 @@ try {
 		echo json_encode(
 			[
 				'forbidden' => true,
+				'message' => 'ask a refresh-token',
 			]
 		);
 	}
@@ -29,6 +30,7 @@ catch (Exception $e) {
 	echo json_encode(
 		[
 			'error' => true,
+			'message' => $e->getMessage(),
 		]
 	);
 }

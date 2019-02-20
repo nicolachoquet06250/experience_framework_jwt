@@ -12,12 +12,22 @@ try {
 			header('Content-Type: application/json');
 			$auth->addClaim(PublicClaimNames::SUBJECT, 1)
 				 ->addClaim(PublicClaimNames::ID, 2);
-			$auth->authenticate();
-			echo json_encode(
-				[
-					'referer' => 'http://'.$_SERVER['HTTP_HOST'],
-				]
-			);
+			if($auth->authenticate()) {
+				header('X-Token: '.$auth->get_token());
+				echo json_encode(
+					[
+						'referer' => 'http://'.$_SERVER['HTTP_HOST'],
+					]
+				);
+			}
+			else {
+				echo json_encode(
+					[
+						'error' => true,
+						'message' => 'pseudo or password not valid',
+					]
+				);
+			}
 			return;
 		}
 	}

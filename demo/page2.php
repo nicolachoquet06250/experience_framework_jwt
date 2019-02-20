@@ -32,6 +32,18 @@ try {
 		    	    }
 		    	    else {
 		    	        $("#auth_status").html("Vous n\'êtes pas authentifié").css("color", "red");
+		    	        $.ajax({
+							url: "refresh_token.php",
+							method: "post",
+							headers: {
+								Authentication: "Bearer " + $("#access_token").val()
+							},
+							async: true,
+							complete: response => {
+								$("#access_token").val(response.getResponseHeader("X-Token"));
+								$("#auth_status").html("Vous êtes re authentifié").css("color", "green");
+							}
+						})
 		    	    }
 		    	});
 		    });

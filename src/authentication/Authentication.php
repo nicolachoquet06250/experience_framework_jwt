@@ -60,7 +60,7 @@ class Authentication {
 	}
 
 	/**
-	 * @return mixed|string
+	 * @return string
 	 * @throws Exception
 	 */
 	public function get_refresh_token() {
