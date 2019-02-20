@@ -217,3 +217,6 @@ and released under the [MIT License](http://opensource.org/licenses/mit-license.
 ----------------------------------------------------------------------------------------
 |  Demande de déconnexion                           |  Suppression du Cookie de token  |
  --------------------------------------------------------------------------------------
+ 
+  Facebook connect => https://developers.facebook.com/apps/2202327223354694/dashboard/
+                      https://developers.facebook.com/docs/php/howto/example_facebook_login?locale=fr_FR
