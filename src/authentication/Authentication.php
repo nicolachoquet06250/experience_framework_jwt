@@ -41,9 +41,6 @@ class Authentication {
 	 * @throws \Exception
 	 */
 	public function get_token() {
-		if($this->authenticated()) {
-			return $_COOKIE['access_token'];
-		}
 		$claims = JWTClaims::create();
 		if(!$claims->isEmpty()) {
 			try {

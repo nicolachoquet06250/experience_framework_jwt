@@ -26,6 +26,7 @@ class Subdomains {
 		$domain = explode(':', $domain)[0];
 		$this->domain = $domain;
 		$this->sub_domains[$domain] = [];
+		return $this;
 	}
 
 	public function set_sub_domain($sub_domain) {
@@ -38,5 +39,9 @@ class Subdomains {
 
 	public function get_main_domain() {
 		return $this->domain;
+	}
+
+	public function get_curent_domain() {
+		return $_SERVER['HTTP_HOST'];
 	}
 }
