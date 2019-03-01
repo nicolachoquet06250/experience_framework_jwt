@@ -1,7 +1,14 @@
 <?php
 namespace MiladRahimi\Jwt\Claims;
 
+use core\External_confs;
 use Exception;
+use MiladRahimi\Jwt\Cryptography\Algorithms\Rsa\RS256Signer;
+use MiladRahimi\Jwt\Cryptography\Algorithms\Rsa\RS256Verifier;
+use MiladRahimi\Jwt\Cryptography\Keys\PrivateKey;
+use MiladRahimi\Jwt\Cryptography\Keys\PublicKey;
+use MiladRahimi\Jwt\JwtGenerator;
+use MiladRahimi\Jwt\JwtParser;
 
 class JWTClaims {
 	protected $claims = [];
@@ -23,6 +30,22 @@ class JWTClaims {
 	public function add(string $claim) {
 		$this->claims[$claim] = true;
 		return $this;
+	}
+
+	/**
+	 * @param $access_token
+	 * @return array|array[]
+	 * @throws Exception
+	 */
+	public function init_with_token($access_token) {
+		$external_confs = External_confs::create();
+
+		$publicKey = new PublicKey($external_confs->get_git_dependencies_dir().'/jwt/keys/public.pem');
+		$verifier = new RS256Verifier($publicKey);
+		$parser = new JwtParser($verifier);
+		$this->claims = $parser->parse($access_token);
+
+		return $this->claims;
 	}
 
 	/**
